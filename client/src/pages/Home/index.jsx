@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axiosInstance from "../../axiosConfig";
 import { MyContext } from "../../App";
+import Alert from "@mui/material/Alert";
 
 const Home = () => {
   const [title, setTitle] = useState("");
@@ -20,42 +21,40 @@ const Home = () => {
       });
   });
 
-  const handleLogout = async () => {
-    try {
-      console.log("Logging out...");
-      const response = await axiosInstance.post(`/logout`);
-      const data = response.data;
-      console.log("Logout data:", data);
+  useEffect(() => {
+    if (context.flashMessage) {
       setTimeout(() => {
-        context.setIsLoggedIn(false);
-        context.setCurrUser(null);
-      }, 100);
-      alert("Logout successful");
-    } catch (error) {
-      console.error("Error during logout:", error);
-      const errorMessage = error.response?.data?.message || "Logout failed";
-      context.setFlashMessage({ success: false, message: errorMessage });
+        context.setFlashMessage(null);
+      }, 4000);
     }
-  };
+  }, [context.flashMessage]);
+
+  if (!features) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="home">
+      <div className="flex-container d-flex justify-content-center mt-3">
+        {context.flashMessage && (
+          <Alert
+            severity="success"
+            style={{ width: "70%", fontSize: "medium" }}
+          >
+            {context.flashMessage}
+          </Alert>
+        )}
+      </div>
       <div className="home_container">
         <h1> {title} </h1>
         <p> {description} </p>
-        {features.length > 0 ? (
-          <ul>
-            {features.map((feature, index) => (
-              <li key={index}>{feature}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>No features available</p>
-        )}
+
+        <ul>
+          {features.map((feature, index) => (
+            <li key={index}>{feature}</li>
+          ))}
+        </ul>
       </div>
-      <button onClick={handleLogout} className="btn bttn btn-outlined">
-        Log out
-      </button>
     </div>
   );
 };

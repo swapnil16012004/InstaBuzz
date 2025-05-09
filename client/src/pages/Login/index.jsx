@@ -11,6 +11,11 @@ const Login = () => {
     e.preventDefault();
     const form = e.target;
 
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
+
     const formData = {
       username: form.username.value,
       password: form.password.value,
@@ -27,10 +32,12 @@ const Login = () => {
       console.log("Login data:", data);
       context.setCurrUser(data.user.username);
       context.setIsLoggedIn(true);
+      context.setFlashMessage(
+        `Welcome back to InstaBuzz ${data.user.username || "User"}!`
+      );
       setTimeout(() => {
         navigate("/");
       }, 100);
-      alert("Login successful");
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
     }
@@ -64,6 +71,8 @@ const Login = () => {
               id="username"
               required
             />
+            <div className="valid-feedback">Looks good!</div>
+            <div className="invalid-feedback">Please choose a username</div>
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
@@ -76,8 +85,10 @@ const Login = () => {
               id="password"
               required
             />
+            <div className="valid-feedback">Nice password!</div>
+            <div className="invalid-feedback">Please Enter the password</div>
           </div>
-          <button className="btn bttn btn-outlined">Login</button>
+          <button className="btn bttn btn-primary">Login</button>
         </form>
       </div>
     </div>

@@ -19,6 +19,12 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const form = e.target;
+
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
     try {
       const response = await axiosInstance.post(`/signup`, formData);
       console.log("Signup successful:", response.data);
@@ -32,7 +38,7 @@ const SignUp = () => {
     <div className="row mt-5 signup-color">
       <h1 className="col-6 offset-3">Signup on InstaBuzz</h1>
       <div className="col-6 offset-3">
-        <form onSubmit={handleSubmit} className="needs-validation">
+        <form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">
               Username
@@ -46,6 +52,8 @@ const SignUp = () => {
               onChange={handleChange}
               required
             />
+            <div className="valid-feedback">Looks good!</div>
+            <div className="invalid-feedback">Please choose a username</div>
           </div>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -60,6 +68,8 @@ const SignUp = () => {
               onChange={handleChange}
               required
             />
+            <div className="valid-feedback">Looks good!</div>
+            <div className="invalid-feedback">Please enter your email</div>
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
@@ -74,8 +84,10 @@ const SignUp = () => {
               onChange={handleChange}
               required
             />
+            <div className="valid-feedback">Nice password!</div>
+            <div className="invalid-feedback">Please Enter the password</div>
           </div>
-          <button type="submit" className="btn bttn btn-outlined">
+          <button type="submit" className="btn bttn btn-primary">
             SignUp
           </button>
         </form>

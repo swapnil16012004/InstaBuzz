@@ -12,12 +12,3 @@
   transition: all 450ms ease-in-out !important;
   border: 1px solid #aaa !important;
 }
-
-.bttn:hover {
-  background: linear-gradient(0deg, #a47cf3, #683fea);
-  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
-    inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
-    0px 0px 0px 4px rgba(255, 255, 255, 0.2), 0px 0px 180px 0px #9917ff;
-  transform: translateY(-2px);
-  border: none !important;
-}

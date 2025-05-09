@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import User from "./pages/User";
 import { createContext, useEffect, useState } from "react";
+import Navbar from "./components/Navbar";
 
 let MyContext = createContext();
 
@@ -15,12 +16,18 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
   });
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [flashMessage, setFlashMessage] = useState(() => {
+    return localStorage.getItem("flashMessage") || null;
+  });
 
   const values = {
     currUser,
     setCurrUser,
     isLoggedIn,
     setIsLoggedIn,
+    flashMessage,
+    setFlashMessage,
   };
 
   useEffect(() => {
@@ -37,6 +44,7 @@ function App() {
     <>
       <Router>
         <MyContext.Provider value={values}>
+          {showNavbar && <Navbar />}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
