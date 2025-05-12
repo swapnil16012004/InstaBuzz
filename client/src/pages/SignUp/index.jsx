@@ -40,7 +40,7 @@ const SignUp = () => {
     try {
       const response = await axiosInstance.post(`/signup`, formData);
       console.log("Signup successful:", response.data);
-      alert("signup successful");
+      context.setFlashMessage(response.data.message);
       navigate("/");
     } catch (error) {
       console.error("Signup failed:", error.response?.data || error.message);

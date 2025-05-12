@@ -37,9 +37,7 @@ const Login = () => {
       context.setBio(data.user.bio);
       context.setSelectedImage(data.user.profileImg);
       context.setIsLoggedIn(true);
-      context.setFlashMessage(
-        `Welcome back to InstaBuzz ${data.user.username || "User"}!`
-      );
+      context.setFlashMessage(data.message);
       setTimeout(() => {
         navigate("/");
       }, 100);

@@ -40,7 +40,7 @@ const EditProfile = () => {
       context.setUserFullName(data.user.name);
       context.setBio(data.user.bio);
 
-      context.setFlashMessage("Profile updated successfully!");
+      context.setFlashMessage(data.message);
       setTimeout(() => {
         navigate("/");
       }, 100);
