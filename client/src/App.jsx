@@ -3,15 +3,30 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import User from "./pages/User";
+import Profile from "./pages/Profile";
 import { createContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Chats from "./pages/Chats";
+import Reels from "./pages/Reels";
+import Search from "./pages/Search";
+import EditProfile from "./pages/EditProfile";
+import profileImg from "./assets/profile1.jpg";
 
 let MyContext = createContext();
 
 function App() {
   const [currUser, setCurrUser] = useState(() => {
     return localStorage.getItem("currUser") || null;
+  });
+  const [gender, setGender] = useState(() => {
+    return localStorage.getItem("gender") || null;
+  });
+  const [userFullName, setUserFullName] = useState(() => {
+    return localStorage.getItem("userFullName") || null;
+  });
+  const [bio, setBio] = useState(() => {
+    return localStorage.getItem("bio") || null;
   });
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
@@ -21,6 +36,10 @@ function App() {
     return localStorage.getItem("flashMessage") || null;
   });
 
+  const [selectedImage, setSelectedImage] = useState(() => {
+    return localStorage.getItem("selectedImage") || profileImg;
+  });
+
   const values = {
     currUser,
     setCurrUser,
@@ -28,17 +47,33 @@ function App() {
     setIsLoggedIn,
     flashMessage,
     setFlashMessage,
+    showNavbar,
+    setShowNavbar,
+    gender,
+    setGender,
+    userFullName,
+    setUserFullName,
+    bio,
+    setBio,
+    selectedImage,
+    setSelectedImage,
   };
 
   useEffect(() => {
     if (currUser) {
       localStorage.setItem("currUser", currUser);
+      localStorage.setItem("gender", gender);
+      localStorage.setItem("userFullName", userFullName);
+      localStorage.setItem("bio", bio);
+      localStorage.setItem("selectedImage", selectedImage);
     } else {
       localStorage.removeItem("currUser");
+      localStorage.removeItem("gender");
+      localStorage.removeItem("userFullName");
+      localStorage.removeItem("bio");
+      localStorage.removeItem("selectedImage");
     }
-
-    localStorage.setItem("isLoggedIn", isLoggedIn);
-  }, [currUser, isLoggedIn]);
+  }, [currUser, isLoggedIn, gender, userFullName, bio, selectedImage]);
 
   return (
     <>
@@ -49,8 +84,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/user" element={<User />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/reels" element={<Reels />} />
+            <Route path="/chats" element={<Chats />} />
+            <Route path={`/${currUser}/Edit`} element={<EditProfile />} />
           </Routes>
+          {showNavbar && <Footer />}
         </MyContext.Provider>
       </Router>
     </>

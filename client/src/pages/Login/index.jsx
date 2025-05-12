@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../../App";
 import axiosInstance from "../../axiosConfig";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   let context = useContext(MyContext);
@@ -31,6 +32,10 @@ const Login = () => {
       const data = response.data;
       console.log("Login data:", data);
       context.setCurrUser(data.user.username);
+      context.setGender(data.user.gender);
+      context.setUserFullName(data.user.name);
+      context.setBio(data.user.bio);
+      context.setSelectedImage(data.user.profileImg);
       context.setIsLoggedIn(true);
       context.setFlashMessage(
         `Welcome back to InstaBuzz ${data.user.username || "User"}!`
@@ -38,6 +43,7 @@ const Login = () => {
       setTimeout(() => {
         navigate("/");
       }, 100);
+      console.log(context.gender);
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
     }
@@ -47,11 +53,12 @@ const Login = () => {
     if (context.currUser) {
       console.log("Current user:", context.currUser);
     }
-  }, [context.currUser]);
+    context.setShowNavbar(false);
+  }, [context.currUser, context.showNavbar]);
 
   return (
     <div className="row mt-5 login-color">
-      <h1 className="col-6 offset-3">Login</h1>
+      <h1 className="col-6 offset-3">Login to InstaBuzz</h1>
       <div className="col-6 offset-3">
         <form
           action={`/login`}
@@ -90,6 +97,12 @@ const Login = () => {
           </div>
           <button className="btn bttn btn-primary">Login</button>
         </form>
+      </div>
+      <div className="col-12 mt-5 d-flex flex-column align-items-center">
+        <p>Don't have an account?</p>
+        <Link to="/signup" style={{ textDecoration: "none", color: "white" }}>
+          <button className="btn bttn btn-primary">Sign Up</button>
+        </Link>
       </div>
     </div>
   );

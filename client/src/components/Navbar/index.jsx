@@ -3,13 +3,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { MyContext } from "../../App";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import axiosInstance from "../../axiosConfig";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   let context = useContext(MyContext);
-
+  const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       console.log("Logging out...");
@@ -21,6 +21,7 @@ const Navbar = () => {
         context.setCurrUser(null);
         context.setFlashMessage("You are logged out successfully!");
       }, 100);
+      navigate("/login");
     } catch (error) {
       console.error("Error during logout:", error);
       const errorMessage = error.response?.data?.message || "Logout failed";
@@ -29,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" className="w-100">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link to="/" style={{ textDecoration: "none", color: "white" }}>
@@ -40,16 +41,6 @@ const Navbar = () => {
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
-        )}
-        {!context.isLoggedIn && (
-          <Link to="/login" style={{ textDecoration: "none", color: "white" }}>
-            <Button color="inherit">Login</Button>
-          </Link>
-        )}
-        {!context.isLoggedIn && (
-          <Link to="/signup" style={{ textDecoration: "none", color: "white" }}>
-            <Button color="inherit">Sign Up</Button>
-          </Link>
         )}
       </Toolbar>
     </AppBar>

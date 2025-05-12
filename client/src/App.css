@@ -1,3 +1,6 @@
+body {
+  overflow-x: hidden;
+}
 .bttn {
   border: none;
   width: 200px;
@@ -11,4 +14,84 @@
   cursor: pointer !important;
   transition: all 450ms ease-in-out !important;
   border: 1px solid #aaa !important;
+}
+
+.footer-box {
+  width: 100%;
+  height: 64px;
+  background-color: #1976d2;
+  padding: 0 8rem 0 8rem;
+  position: fixed;
+  bottom: 0px;
+}
+
+.footer-box svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.profile-container {
+  width: 100%;
+  height: auto;
+}
+
+.profile-section {
+  height: 200px;
+  width: 100%;
+  gap: 30px;
+}
+
+.hr {
+  width: 80%;
+}
+
+.img-container {
+  width: 150px;
+  height: 150px;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.edit-profile {
+  gap: 20px;
+}
+
+.edit-profile-btn {
+  height: 35px;
+}
+
+.posts-section {
+  height: auto;
+}
+
+.posts-container {
+  gap: 0.5rem;
+}
+
+.posts-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.posts-title svg {
+  height: 17px;
+  width: 17px;
+}
+
+.gender {
+  font-size: 16px;
+}
+
+.editProfile {
+  margin-bottom: 100px;
+}
+
+.cursor {
+  cursor: pointer;
 }

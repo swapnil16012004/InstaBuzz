@@ -2,12 +2,14 @@ import { useState, useEffect, useContext } from "react";
 import axiosInstance from "../../axiosConfig";
 import { MyContext } from "../../App";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [features, setFeatures] = useState([]);
   let context = useContext(MyContext);
+  const navigate = useNavigate();
   useEffect(() => {
     axiosInstance
       .get("/pages")
@@ -15,11 +17,12 @@ const Home = () => {
         setTitle(response.data.title);
         setDescription(response.data.description);
         setFeatures(response.data.features);
+        context.setShowNavbar(true);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  });
+  }, [context.showNavbar]);
 
   useEffect(() => {
     if (context.flashMessage) {
@@ -28,6 +31,12 @@ const Home = () => {
       }, 4000);
     }
   }, [context.flashMessage]);
+
+  useEffect(() => {
+    if (context.currUser === null) {
+      navigate("/login");
+    }
+  }, [context.currUser]);
 
   if (!features) {
     return <div>Loading...</div>;

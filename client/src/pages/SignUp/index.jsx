@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../../axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { MyContext } from "../../App";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 const SignUp = () => {
+  const context = useContext(MyContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
+    name: "",
     password: "",
+    gender: "",
   });
 
   const handleChange = (e) => {
@@ -16,6 +26,8 @@ const SignUp = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  console.log("Form data:", formData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +46,11 @@ const SignUp = () => {
       console.error("Signup failed:", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    context.setShowNavbar(false);
+  }, [context.showNavbar]);
+
   return (
     <div className="row mt-5 signup-color">
       <h1 className="col-6 offset-3">Signup on InstaBuzz</h1>
@@ -72,6 +89,22 @@ const SignUp = () => {
             <div className="invalid-feedback">Please enter your email</div>
           </div>
           <div className="mb-3">
+            <label htmlFor="name" className="form-label">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              className="form-control"
+              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+            <div className="valid-feedback">Looks good!</div>
+            <div className="invalid-feedback">Please choose your Name</div>
+          </div>
+          <div className="mb-3">
             <label htmlFor="password" className="form-label">
               Password
             </label>
@@ -87,10 +120,45 @@ const SignUp = () => {
             <div className="valid-feedback">Nice password!</div>
             <div className="invalid-feedback">Please Enter the password</div>
           </div>
+          <div className="mb-3">
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="male"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+              >
+                <FormControlLabel
+                  value="male"
+                  control={<Radio />}
+                  label="Male"
+                />
+                <FormControlLabel
+                  value="female"
+                  control={<Radio />}
+                  label="Female"
+                />
+
+                <FormControlLabel
+                  value="other"
+                  control={<Radio />}
+                  label="Other"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
           <button type="submit" className="btn bttn btn-primary">
             SignUp
           </button>
         </form>
+      </div>
+      <div className="col-12 mt-5 d-flex flex-column align-items-center">
+        <p>Already have an account?</p>
+        <Link to="/login" style={{ textDecoration: "none", color: "white" }}>
+          <button className="btn bttn btn-primary">Log In</button>
+        </Link>
       </div>
     </div>
   );
