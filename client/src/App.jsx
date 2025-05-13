@@ -12,6 +12,7 @@ import Reels from "./pages/Reels";
 import Search from "./pages/Search";
 import EditProfile from "./pages/EditProfile";
 import profileImg from "./assets/profile1.jpg";
+import CreatePost from "./pages/CreatePost";
 
 let MyContext = createContext();
 
@@ -40,6 +41,10 @@ function App() {
     return localStorage.getItem("selectedImage") || profileImg;
   });
 
+  const [posts, setPosts] = useState(() => {
+    return JSON.parse(localStorage.getItem("posts")) || [];
+  });
+
   const values = {
     currUser,
     setCurrUser,
@@ -57,6 +62,8 @@ function App() {
     setBio,
     selectedImage,
     setSelectedImage,
+    posts,
+    setPosts,
   };
 
   useEffect(() => {
@@ -66,14 +73,16 @@ function App() {
       localStorage.setItem("userFullName", userFullName);
       localStorage.setItem("bio", bio);
       localStorage.setItem("selectedImage", selectedImage);
+      localStorage.setItem("posts", JSON.stringify(posts));
     } else {
       localStorage.removeItem("currUser");
       localStorage.removeItem("gender");
       localStorage.removeItem("userFullName");
       localStorage.removeItem("bio");
       localStorage.removeItem("selectedImage");
+      localStorage.removeItem("posts");
     }
-  }, [currUser, isLoggedIn, gender, userFullName, bio, selectedImage]);
+  }, [currUser, isLoggedIn, gender, userFullName, bio, selectedImage, posts]);
 
   return (
     <>
@@ -88,7 +97,8 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/reels" element={<Reels />} />
             <Route path="/chats" element={<Chats />} />
-            <Route path={`/${currUser}/Edit`} element={<EditProfile />} />
+            <Route path="/:username/edit" element={<EditProfile />} />
+            <Route path="/:username/create" element={<CreatePost />} />
           </Routes>
           {showNavbar && <Footer />}
         </MyContext.Provider>

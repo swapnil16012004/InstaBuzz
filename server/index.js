@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/UserModel");
+const Post = require("./models/PostModel");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const MongoStore = require("connect-mongo");

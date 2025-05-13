@@ -8,6 +8,7 @@ import { useContext, useEffect } from "react";
 import { MyContext } from "../../App";
 import axiosInstance from "../../axiosConfig";
 import { useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
 
 const EditProfile = () => {
   const context = useContext(MyContext);
@@ -130,16 +131,14 @@ const EditProfile = () => {
               </RadioGroup>
             </FormControl>
           </div>
-          <label htmlFor="bio bold" style={{ color: "rgba(0, 0, 0, 0.6)" }}>
-            Bio
-          </label>
+
           <div className="mb-3">
-            <TextareaAutosize
-              aria-label="minimum height"
+            <TextField
               id="bio"
-              minRows={4}
+              label="Bio"
+              variant="outlined"
               defaultValue={context.bio}
-              style={{ width: 600, borderRadius: "5px", opacity: "0.8" }}
+              style={{ width: 600, opacity: "0.8" }}
             />
           </div>
           <button className="btn bttn btn-primary">Edit</button>

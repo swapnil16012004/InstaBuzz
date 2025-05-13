@@ -55,6 +55,7 @@ body {
 .profile-img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   border-radius: 50%;
 }
 
@@ -68,9 +69,11 @@ body {
 
 .posts-section {
   height: auto;
+  width: 80%;
 }
 
 .posts-container {
+  width: 80%;
   gap: 0.5rem;
 }
 
@@ -94,4 +97,12 @@ body {
 
 .cursor {
   cursor: pointer;
+}
+
+.post-card {
+  width: 310px;
+}
+
+.post-image-card img {
+  object-fit: contain;
 }

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../../models/UserModel");
+const Post = require("../../models/PostModel");
 const { storage } = require("../../cloudConfig");
 const multer = require("multer");
 const upload = multer({ storage });
@@ -91,6 +92,62 @@ router.put("/:user/upload", upload.single("profileImg"), async (req, res) => {
   } catch (err) {
     console.error("Error in image upload:", err);
     return res.status(500).json({ error: "Image upload failed" });
+  }
+});
+
+router.get("/:user/getposts", async (req, res) => {
+  const username = req.params.user;
+  try {
+    const user = await User.findOne({ username }).populate("posts");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const posts = user.posts;
+    const postCount = posts.length;
+    if (postCount === 0) {
+      return res.status(200).json({ posts: [], postCount: 0 });
+    }
+
+    res.status(200).json({ posts, postCount });
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/:username/create", upload.single("postImg"), async (req, res) => {
+  const { username } = req.params;
+  const { caption } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log("File path:", req.file.path);
+
+    if (!req.file) {
+      console.error("File not uploaded");
+      return res.status(400).json({ error: "File not uploaded" });
+    }
+
+    const newPost = new Post({
+      imageUrl: req.file.path,
+      caption,
+      author: user._id,
+    });
+
+    await newPost.save();
+    user.posts.push(newPost._id);
+    await user.save();
+    res
+      .status(201)
+      .json({ message: "Post created successfully", post: newPost });
+    console.log("Post created successfully:", newPost);
+  } catch (error) {
+    console.error("Error creating post:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
