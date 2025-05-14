@@ -172,6 +172,23 @@ const Profile = () => {
                     image={post.imageUrl}
                     alt="post"
                   />
+                  <div className="overlay"></div>
+                  <div className="overlay-info d-flex justify-content-center align-items-center">
+                    <div className="likes d-flex align-items-center gap-1">
+                      <i
+                        className="fa-solid fa-heart"
+                        style={{ color: "#ffffff" }}
+                      ></i>
+                      105
+                    </div>
+                    <div className="comments d-flex align-items-center gap-1">
+                      <i
+                        className="fa-solid fa-comment"
+                        style={{ color: "#ffffff" }}
+                      ></i>
+                      20
+                    </div>
+                  </div>
                 </Card>
                 <span>{post.caption}</span>
                 <span>
