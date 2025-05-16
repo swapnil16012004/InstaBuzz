@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { IoMdMale } from "react-icons/io";
 import { IoMdFemale } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
 import Alert from "@mui/material/Alert";
 
 const Profile = () => {
@@ -27,6 +26,7 @@ const Profile = () => {
     posts,
     setPosts,
     flashMessage,
+    setSelectedPost,
   } = useContext(MyContext);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -67,13 +67,15 @@ const Profile = () => {
       try {
         const response = await axiosInstance.get(`/${currUser}/getposts`);
         setPosts(response.data.posts);
+        console.log("Posts fetched:", response.data.posts);
       } catch (err) {
         console.error("Error fetching posts:", err);
       }
     };
 
     fetchPosts();
-  }, [currUser]);
+    // console.log("Posts fetched:", posts);
+  }, [currUser, setPosts]);
 
   useEffect(() => {
     setShowNavbar(true);
@@ -92,6 +94,10 @@ const Profile = () => {
       navigate("/login");
     }
   }, [currUser]);
+
+  if (!posts) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -163,38 +169,43 @@ const Profile = () => {
           </div>
           <div className="posts-container d-flex flex-wrap">
             {posts.map((post) => (
-              <div key={post._id} className="post-card d-flex flex-column">
-                <Card className="post-image-card">
-                  <CardMedia
-                    component="img"
-                    height="410"
-                    width={"310"}
-                    image={post.imageUrl}
-                    alt="post"
-                  />
-                  <div className="overlay"></div>
-                  <div className="overlay-info d-flex justify-content-center align-items-center">
-                    <div className="likes d-flex align-items-center gap-1">
-                      <i
-                        className="fa-solid fa-heart"
-                        style={{ color: "#ffffff" }}
-                      ></i>
-                      105
+              <button
+                onClick={() => setSelectedPost(post)}
+                key={post._id}
+                className="btn1"
+              >
+                <Link
+                  to={`/profile/${post.author.username}/${post._id}`}
+                  key={post._id}
+                >
+                  <Card className="post-image-card">
+                    <CardMedia
+                      component="img"
+                      height="410"
+                      width={"310"}
+                      image={post.imageUrl}
+                      alt="post"
+                    />
+                    <div className="overlay"></div>
+                    <div className="overlay-info d-flex justify-content-center align-items-center">
+                      <div className="likes d-flex align-items-center gap-1">
+                        <i
+                          className="fa-solid fa-heart"
+                          style={{ color: "#ffffff" }}
+                        ></i>
+                        105
+                      </div>
+                      <div className="comments d-flex align-items-center gap-1">
+                        <i
+                          className="fa-solid fa-comment"
+                          style={{ color: "#ffffff" }}
+                        ></i>
+                        20
+                      </div>
                     </div>
-                    <div className="comments d-flex align-items-center gap-1">
-                      <i
-                        className="fa-solid fa-comment"
-                        style={{ color: "#ffffff" }}
-                      ></i>
-                      20
-                    </div>
-                  </div>
-                </Card>
-                <span>{post.caption}</span>
-                <span>
-                  {format(new Date(post.createdAt), "dd MMM yyyy, hh:mm a")}
-                </span>
-              </div>
+                  </Card>
+                </Link>
+              </button>
             ))}
           </div>
         </div>

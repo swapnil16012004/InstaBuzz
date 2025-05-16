@@ -98,7 +98,13 @@ router.put("/:user/upload", upload.single("profileImg"), async (req, res) => {
 router.get("/:user/getposts", async (req, res) => {
   const username = req.params.user;
   try {
-    const user = await User.findOne({ username }).populate("posts");
+    const user = await User.findOne({ username }).populate({
+      path: "posts",
+      populate: {
+        path: "author",
+        select: "username profileImg",
+      },
+    });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
