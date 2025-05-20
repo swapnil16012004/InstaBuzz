@@ -155,6 +155,11 @@ a {
   color: inherit;
 }
 
+a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
 .full-post-section {
   width: 100%;
   height: 100%;
@@ -190,7 +195,7 @@ a {
 }
 
 .fullPost-info {
-  flex: 1;
+  height: 523px;
 }
 
 .fullPost-caption {
@@ -201,6 +206,12 @@ a {
 
 .fullPost-comment-container {
   flex: 1;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.fullPost-comment-container::-webkit-scrollbar {
+  display: none;
 }
 
 .fullPost-comment {
@@ -209,7 +220,7 @@ a {
 
 .fullPost-likes-info-container {
   width: 100%;
-  height: 65px;
+  height: 100px;
 }
 
 .fullPost-likes-info {
@@ -234,7 +245,10 @@ a {
 
 .fullPost-add-comment {
   width: 100%;
-  height: 30px;
+  height: 55px;
+}
+label {
+  margin-bottom: 0 !important;
 }
 
 .fullPost-comment-input {
@@ -282,4 +296,62 @@ a {
 .nameCommentMargin {
   margin-left: 18px;
   margin-right: 0.5rem;
+}
+
+.searchedUser {
+  margin-left: 2rem;
+  margin-top: 3rem;
+  padding: 0.5rem;
+  width: 250px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.searchedUserInfo {
+  gap: 0.5rem;
+}
+
+.closeSearchBtn {
+  border: none !important;
+  background: transparent !important;
+}
+
+.closeSearchBtn:focus {
+  outline: none !important;
+}
+
+.closeSearch {
+  font-size: 27px;
+}
+
+.searchUserInput {
+  margin-top: 2rem;
+  margin-left: 2rem;
+  gap: 1rem;
+}
+
+.searchUserInput input {
+  display: inline-block !important;
+  width: 70% !important;
+}
+
+.css-10d30g3-MuiPaper-root-MuiDialog-paper {
+  width: 400px !important;
+  height: 416px !important;
+}
+
+.css-auie0c-MuiButtonBase-root-MuiIconButton-root:focus {
+  outline: none !important;
+}
+
+.css-mdw2u7-MuiModal-root-MuiDialog-root .MuiDialogContent-root {
+  height: 336px !important;
+  overflow-y: hidden !important;
+  width: 386px !important;
+  margin-left: 0.5rem !important;
+}
+
+.logoutBtn:focus {
+  outline: none !important;
 }

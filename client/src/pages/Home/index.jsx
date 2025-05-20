@@ -48,7 +48,7 @@ const Home = () => {
         {context.flashMessage && (
           <Alert
             severity="success"
-            style={{ width: "70%", fontSize: "medium" }}
+            style={{ width: "1050px", fontSize: "medium" }}
           >
             {context.flashMessage}
           </Alert>

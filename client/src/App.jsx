@@ -14,6 +14,7 @@ import EditProfile from "./pages/EditProfile";
 import profileImg from "./assets/profile1.jpg";
 import CreatePost from "./pages/CreatePost";
 import FullPost from "./pages/FullPost";
+import ClickSpark from "../Reactbits/ClickSpark/ClickSpark";
 
 let MyContext = createContext();
 
@@ -42,12 +43,42 @@ function App() {
     return localStorage.getItem("selectedImage") || profileImg;
   });
 
+  const [currUserImage, setCurrUserImage] = useState(() => {
+    return localStorage.getItem("currUserImage") || profileImg;
+  });
+
   const [posts, setPosts] = useState(() => {
-    return JSON.parse(localStorage.getItem("posts")) || [];
+    const data = localStorage.getItem("posts");
+    return data ? JSON.parse(data) : [];
   });
 
   const [selectedPost, setSelectedPost] = useState(() => {
-    return JSON.parse(localStorage.getItem("selectedPost")) || [];
+    const data = localStorage.getItem("selectedPost");
+    return data ? JSON.parse(data) : [];
+  });
+
+  const [selectedUser, setSelectedUser] = useState(() => {
+    return localStorage.getItem("selectedUser") || null;
+  });
+
+  const [searchedUser, setSearchedUser] = useState(() => {
+    const data = localStorage.getItem("searchedUser");
+    return data ? JSON.parse(data) : [];
+  });
+
+  const [postAllComments, setPostAllComments] = useState(() => {
+    const data = localStorage.getItem("postAllComments");
+    return data ? JSON.parse(data) : [];
+  });
+
+  const [postAllLikes, setPostAllLikes] = useState(() => {
+    try {
+      const data = localStorage.getItem("postAllLikes");
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      localStorage.removeItem("postAllLikes");
+      return [];
+    }
   });
 
   const values = {
@@ -71,6 +102,16 @@ function App() {
     setPosts,
     selectedPost,
     setSelectedPost,
+    selectedUser,
+    setSelectedUser,
+    currUserImage,
+    setCurrUserImage,
+    searchedUser,
+    setSearchedUser,
+    postAllComments,
+    setPostAllComments,
+    postAllLikes,
+    setPostAllLikes,
   };
 
   useEffect(() => {
@@ -82,6 +123,11 @@ function App() {
       localStorage.setItem("selectedImage", selectedImage);
       localStorage.setItem("posts", JSON.stringify(posts));
       localStorage.setItem("selectedPost", JSON.stringify(selectedPost));
+      localStorage.setItem("selectedUser", selectedUser);
+      localStorage.setItem("currUserImage", currUserImage);
+      localStorage.setItem("searchedUser", JSON.stringify(searchedUser));
+      localStorage.setItem("postAllComments", JSON.stringify(postAllComments));
+      localStorage.setItem("postAllLikes", JSON.stringify(postAllLikes));
     } else {
       localStorage.removeItem("currUser");
       localStorage.removeItem("gender");
@@ -90,6 +136,11 @@ function App() {
       localStorage.removeItem("selectedImage");
       localStorage.removeItem("posts");
       localStorage.removeItem("selectedPost");
+      localStorage.removeItem("selectedUser");
+      localStorage.removeItem("currUserImage");
+      localStorage.removeItem("searchedUser");
+      localStorage.removeItem("postAllComments");
+      localStorage.removeItem("postAllLikes");
     }
   }, [
     currUser,
@@ -100,28 +151,40 @@ function App() {
     selectedImage,
     posts,
     selectedPost,
+    selectedUser,
+    currUserImage,
+    postAllComments,
+    postAllLikes,
   ]);
 
   return (
     <>
-      <Router>
-        <MyContext.Provider value={values}>
-          {showNavbar && <Navbar />}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile/:username" element={<Profile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/reels" element={<Reels />} />
-            <Route path="/chats" element={<Chats />} />
-            <Route path="/:username/edit" element={<EditProfile />} />
-            <Route path="/:username/create" element={<CreatePost />} />
-            <Route path="/profile/:username/:id" element={<FullPost />} />
-          </Routes>
-          {showNavbar && <Footer />}
-        </MyContext.Provider>
-      </Router>
+      <ClickSpark
+        sparkColor="#000"
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+      >
+        <Router>
+          <MyContext.Provider value={values}>
+            {showNavbar && <Navbar />}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/profile/:username" element={<Profile />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/reels" element={<Reels />} />
+              <Route path="/chats" element={<Chats />} />
+              <Route path="/:username/edit" element={<EditProfile />} />
+              <Route path="/:username/create" element={<CreatePost />} />
+              <Route path="/profile/:username/:id" element={<FullPost />} />
+            </Routes>
+            {showNavbar && <Footer />}
+          </MyContext.Provider>
+        </Router>
+      </ClickSpark>
     </>
   );
 }

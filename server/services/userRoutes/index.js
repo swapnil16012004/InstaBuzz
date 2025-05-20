@@ -95,26 +95,17 @@ router.put("/:user/upload", upload.single("profileImg"), async (req, res) => {
   }
 });
 
-router.get("/:user/getposts", async (req, res) => {
-  const username = req.params.user;
+router.get("/:user/:postId/getposts", async (req, res) => {
+  const postId = req.params.postId;
   try {
-    const user = await User.findOne({ username }).populate({
-      path: "posts",
-      populate: {
-        path: "author",
-        select: "username profileImg",
-      },
-    });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "post not found" });
     }
-    const posts = user.posts;
-    const postCount = posts.length;
-    if (postCount === 0) {
-      return res.status(200).json({ posts: [], postCount: 0 });
-    }
+    const Comments = post.comments;
+    const likes = post.likes;
 
-    res.status(200).json({ posts, postCount });
+    res.status(200).json({ Comments, likes });
   } catch (err) {
     console.error("Error fetching posts:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -153,6 +144,193 @@ router.post("/:username/create", upload.single("postImg"), async (req, res) => {
     console.log("Post created successfully:", newPost);
   } catch (error) {
     console.error("Error creating post:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/:user/getuser", async (req, res) => {
+  const username = req.params.user;
+  try {
+    const user = await User.findOne({ username }).populate({
+      path: "posts",
+      populate: {
+        path: "author",
+        select: "username profileImg email name bio gender",
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/:user/getuser", async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username }).populate({
+      path: "posts",
+      populate: {
+        path: "author",
+        select: "username profileImg email name bio gender",
+      },
+    });
+    if (!user) {
+      return res.status(200).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/:user/:postId/addComment", async (req, res) => {
+  const { username, commentAuthor, comment, authorImg } = req.body;
+  const { postId } = req.params;
+  try {
+    const user = await User.findOne({ username }).populate("posts");
+    if (!user) {
+      return res.status(200).json({ message: "User not found" });
+    }
+    const post = user.posts.find((p) => p._id.toString() === postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    const newComment = {
+      commentAuthor: commentAuthor,
+      authorImg: authorImg,
+      comment: comment,
+      createdAt: new Date(),
+    };
+
+    post.comments.push(newComment);
+
+    await Post.findByIdAndUpdate(postId, { comments: post.comments });
+
+    res.status(200).json({
+      message: "New comment added successfully",
+      comments: post.comments,
+    });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// router.post("/:user/:postId/addLike", async (req, res) => {
+//   const { username, likeAuthor } = req.body;
+//   const { postId } = req.params;
+//   try {
+//     const user = await User.findOne({ username }).populate("posts");
+//     if (!user) {
+//       return res.status(200).json({ message: "User not found" });
+//     }
+//     const post = user.posts.find((p) => p._id.toString() === postId);
+//     if (!post) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//     post.likes = post.likes.filter(
+//       (like) => typeof like === "object" && like !== null
+//     );
+
+//     const newLikeAuthor = {
+//       likeAuthor: likeAuthor,
+//     };
+
+//     post.likes.push(newLikeAuthor);
+
+//     await Post.findByIdAndUpdate(postId, { likes: post.likes });
+
+//     res.status(200).json({
+//       likes: post.likes,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching user:", err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+// router.post("/:user/:postId/removeLike", async (req, res) => {
+//   const { username, likeAuthor } = req.body;
+//   const { postId } = req.params;
+//   try {
+//     const user = await User.findOne({ username }).populate("posts");
+//     if (!user) {
+//       return res.status(200).json({ message: "User not found" });
+//     }
+//     const post = user.posts.find((p) => p._id.toString() === postId);
+//     if (!post) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//     post.likes = post.likes.filter(
+//       (like) => typeof like === "object" && like !== null
+//     );
+
+//     post.likes = post.likes.filter((like) => like.likeAuthor !== likeAuthor);
+
+//     await Post.findByIdAndUpdate(postId, { likes: post.likes });
+
+//     res.status(200).json({
+//       likes: post.likes,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching user:", err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+router.post("/:user/:postId/addLike", async (req, res) => {
+  const { likeAuthor, authorImg } = req.body;
+  const { postId } = req.params;
+
+  try {
+    const newLike = { likeAuthor, authorImg };
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $addToSet: { likes: newLike } },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({
+      likes: updatedPost.likes,
+    });
+  } catch (err) {
+    console.error("Error adding like:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/:user/:postId/removeLike", async (req, res) => {
+  const { likeAuthor, authorImg } = req.body;
+  const { postId } = req.params;
+
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { likes: { likeAuthor, authorImg } } },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({
+      likes: updatedPost.likes,
+    });
+  } catch (err) {
+    console.error("Error removing like:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });

@@ -20,10 +20,34 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  likes: {
-    type: Number,
-    default: 0,
-  },
+  likes: [
+    {
+      likeAuthor: {
+        type: String,
+      },
+      authorImg: {
+        type: String,
+      },
+    },
+  ],
+
+  comments: [
+    {
+      commentAuthor: {
+        type: String,
+      },
+      comment: {
+        type: String,
+      },
+      authorImg: {
+        type: String,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Post", postSchema);

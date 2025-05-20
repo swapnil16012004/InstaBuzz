@@ -35,6 +35,7 @@ const Login = () => {
       context.setGender(data.user.gender);
       context.setUserFullName(data.user.name);
       context.setBio(data.user.bio);
+      context.setCurrUserImage(data.user.profileImg);
       context.setSelectedImage(data.user.profileImg);
       context.setIsLoggedIn(true);
       context.setFlashMessage(data.message);

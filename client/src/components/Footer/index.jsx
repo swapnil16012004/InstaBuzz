@@ -3,16 +3,45 @@ import { GrHomeRounded } from "react-icons/gr";
 import { IoSearch } from "react-icons/io5";
 import { BiSolidVideos } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../../App";
 import Account from "../Account";
+import Dock from "../../../Reactbits/Dock/Dock";
+import { IoPerson } from "react-icons/io5";
 
 const Footer = () => {
-  const { currUser, selectedImage } = useContext(MyContext);
+  const { currUser, currUserImage } = useContext(MyContext);
+  const navigate = useNavigate();
+  const items = [
+    {
+      icon: <GrHomeRounded size={20} />,
+      label: "Home",
+      onClick: () => navigate("/"),
+    },
+    {
+      icon: <IoSearch size={20} />,
+      label: "Search",
+      onClick: () => navigate("/search"),
+    },
+    {
+      icon: <BiSolidVideos size={20} />,
+      label: "Reels",
+      onClick: () => navigate("/reels"),
+    },
+    {
+      icon: <RiSendPlaneFill size={20} />,
+      label: "Chats",
+      onClick: () => navigate("/chats"),
+    },
+    {
+      icon: <IoPerson size={20} />,
+      label: "Profile",
+      onClick: () => (window.location.href = `/profile/${currUser}`),
+    },
+  ];
   return (
-    <footer>
-      <div className="footer-box d-flex justify-content-between align-items-center">
+    <footer style={{ position: "relative", zIndex: 100 }}>
+      {/* <div className="footer-box d-flex justify-content-between align-items-center">
         <Link to={"/"}>
           <GrHomeRounded />
         </Link>
@@ -25,12 +54,19 @@ const Footer = () => {
         <Link to={"/chats"}>
           <RiSendPlaneFill />
         </Link>
-        <Link to={`/profile/${currUser}`}>
+        <a href={`/profile/${currUser}`}>
           <div className="currProfileImg">
-            <Account img={selectedImage} />
+            <Account img={currUserImage} />
           </div>
-        </Link>
-      </div>
+        </a>
+      </div> */}
+      <Dock
+        items={items}
+        panelHeight={68}
+        baseItemSize={50}
+        magnification={70}
+        className="footerDock"
+      />
     </footer>
   );
 };

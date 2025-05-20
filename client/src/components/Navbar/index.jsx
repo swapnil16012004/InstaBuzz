@@ -38,7 +38,7 @@ const Navbar = () => {
           </Link>
         </Typography>
         {context.isLoggedIn && (
-          <Button color="inherit" onClick={handleLogout}>
+          <Button className="logoutBtn" color="inherit" onClick={handleLogout}>
             Logout
           </Button>
         )}

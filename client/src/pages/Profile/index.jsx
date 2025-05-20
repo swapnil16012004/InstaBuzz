@@ -6,11 +6,12 @@ import axiosInstance from "../../axiosConfig";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { BsFillGrid3X3GapFill } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { IoMdMale } from "react-icons/io";
 import { IoMdFemale } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Alert from "@mui/material/Alert";
+import { useParams } from "react-router-dom";
 
 const Profile = () => {
   const {
@@ -27,9 +28,17 @@ const Profile = () => {
     setPosts,
     flashMessage,
     setSelectedPost,
+    setGender,
+    setUserFullName,
+    setBio,
+    selectedUser,
+    setSelectedUser,
   } = useContext(MyContext);
+
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const { username } = useParams();
+  console.log(username);
 
   const handleImageClick = () => {
     fileInputRef.current.click();
@@ -43,7 +52,7 @@ const Profile = () => {
 
       try {
         const response = await axiosInstance.put(
-          `/${currUser}/upload`,
+          `/${selectedUser}/upload`,
           formData,
           {
             headers: {
@@ -63,19 +72,30 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchUserInfo = async () => {
       try {
-        const response = await axiosInstance.get(`/${currUser}/getposts`);
-        setPosts(response.data.posts);
-        console.log("Posts fetched:", response.data.posts);
+        const response = await axiosInstance.get(`/${username}/getuser`);
+        const data = response.data.user;
+        setPosts(data.posts);
+        setGender(data.gender);
+        setUserFullName(data.name);
+        setBio(data.bio);
+        setSelectedImage(data.profileImg);
+        setSelectedUser(data.username);
       } catch (err) {
-        console.error("Error fetching posts:", err);
+        console.error("Error fetching user:", err);
       }
     };
 
-    fetchPosts();
-    // console.log("Posts fetched:", posts);
-  }, [currUser, setPosts]);
+    fetchUserInfo();
+  }, [
+    setPosts,
+    setGender,
+    setUserFullName,
+    setBio,
+    setSelectedImage,
+    setSelectedUser,
+  ]);
 
   useEffect(() => {
     setShowNavbar(true);
@@ -105,7 +125,7 @@ const Profile = () => {
         {flashMessage && (
           <Alert
             severity="success"
-            style={{ width: "70%", fontSize: "medium" }}
+            style={{ width: "1050px", fontSize: "medium" }}
           >
             {flashMessage}
           </Alert>
@@ -129,12 +149,14 @@ const Profile = () => {
           </div>
           <div className="profile-info ">
             <div className="edit-profile d-flex align-items-center">
-              <h2>{currUser}</h2>
-              <Link to={`/${currUser}/edit`}>
-                <button className="edit-profile-btn btn btn-primary">
-                  Edit Profile
-                </button>
-              </Link>
+              <h2>{selectedUser}</h2>
+              {currUser === selectedUser && (
+                <Link to={`/${selectedUser}/edit`}>
+                  <button className="edit-profile-btn btn btn-primary">
+                    Edit Profile
+                  </button>
+                </Link>
+              )}
             </div>
             <div className="post-count">
               <p>
@@ -163,9 +185,11 @@ const Profile = () => {
         <div className="posts-section d-flex flex-column align-items-center">
           <div className="posts-title mb-2 d-flex align-items-center justify-content-center gap-2">
             <BsFillGrid3X3GapFill /> POSTS
-            <Link to={`/${currUser}/create`}>
-              <button className="btn btn-primary"> Create</button>
-            </Link>
+            {currUser === selectedUser && (
+              <Link to={`/${selectedUser}/create`}>
+                <button className="btn btn-primary"> Create</button>
+              </Link>
+            )}
           </div>
           <div className="posts-container d-flex flex-wrap">
             {posts.map((post) => (
@@ -193,14 +217,14 @@ const Profile = () => {
                           className="fa-solid fa-heart"
                           style={{ color: "#ffffff" }}
                         ></i>
-                        105
+                        {post.likes.length}
                       </div>
                       <div className="comments d-flex align-items-center gap-1">
                         <i
                           className="fa-solid fa-comment"
                           style={{ color: "#ffffff" }}
                         ></i>
-                        20
+                        {post.comments.length}
                       </div>
                     </div>
                   </Card>
