@@ -1,11 +1,10 @@
 import { useContext } from "react";
 import { GrHomeRounded } from "react-icons/gr";
 import { IoSearch } from "react-icons/io5";
-import { BiSolidVideos } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MyContext } from "../../App";
-import Account from "../Account";
+import { FiPlusSquare } from "react-icons/fi";
 import Dock from "../../../Reactbits/Dock/Dock";
 import { IoPerson } from "react-icons/io5";
 
@@ -24,9 +23,9 @@ const Footer = () => {
       onClick: () => navigate("/search"),
     },
     {
-      icon: <BiSolidVideos size={20} />,
-      label: "Reels",
-      onClick: () => navigate("/reels"),
+      icon: <FiPlusSquare size={22} />,
+      label: "Create",
+      onClick: () => navigate(`/${currUser}/create`),
     },
     {
       icon: <RiSendPlaneFill size={20} />,

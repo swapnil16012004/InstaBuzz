@@ -6,7 +6,7 @@ import axiosInstance from "../../axiosConfig";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { BsFillGrid3X3GapFill } from "react-icons/bs";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoMdMale } from "react-icons/io";
 import { IoMdFemale } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -139,13 +139,24 @@ const Profile = () => {
               alt="Profile"
               className="profile-img"
             />
-            <input
-              type="file"
-              name="profileImg"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              style={{ display: "none" }}
-            />
+            {username === currUser ? (
+              <input
+                type="file"
+                name="profileImg"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            ) : (
+              <input
+                type="file"
+                name="profileImg"
+                disabled
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            )}
           </div>
           <div className="profile-info ">
             <div className="edit-profile d-flex align-items-center">
@@ -185,11 +196,6 @@ const Profile = () => {
         <div className="posts-section d-flex flex-column align-items-center">
           <div className="posts-title mb-2 d-flex align-items-center justify-content-center gap-2">
             <BsFillGrid3X3GapFill /> POSTS
-            {currUser === selectedUser && (
-              <Link to={`/${selectedUser}/create`}>
-                <button className="btn btn-primary"> Create</button>
-              </Link>
-            )}
           </div>
           <div className="posts-container d-flex flex-wrap">
             {posts.map((post) => (

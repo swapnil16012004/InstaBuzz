@@ -78,7 +78,7 @@ body {
 
 .posts-container {
   width: 80%;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .posts-title {
@@ -170,12 +170,15 @@ a:hover {
   width: 80%;
   height: 80%;
   background: white;
-  border: 1px solid black;
+  border-radius: 20px;
+  box-shadow: 0px 2px 15px 0px black;
 }
 
 .fullPost-img-container {
   width: 40%;
   height: 100%;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .fullPost-info-container {
@@ -186,6 +189,8 @@ a:hover {
 .fullPost-img {
   height: 100%;
   width: 100%;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .fullPost-username {

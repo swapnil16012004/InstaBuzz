@@ -8,7 +8,6 @@ import { createContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Chats from "./pages/Chats";
-import Reels from "./pages/Reels";
 import Search from "./pages/Search";
 import EditProfile from "./pages/EditProfile";
 import profileImg from "./assets/profile1.jpg";
@@ -175,7 +174,6 @@ function App() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/profile/:username" element={<Profile />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/reels" element={<Reels />} />
               <Route path="/chats" element={<Chats />} />
               <Route path="/:username/edit" element={<EditProfile />} />
               <Route path="/:username/create" element={<CreatePost />} />
