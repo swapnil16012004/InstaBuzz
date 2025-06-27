@@ -6,40 +6,47 @@ const Post = require("../../models/PostModel");
 const { storage } = require("../../cloudConfig");
 const multer = require("multer");
 const upload = multer({ storage });
+const jwt = require("jsonwebtoken");
 
 router.post("/signup", async (req, res) => {
   try {
     let { username, email, name, password, gender } = req.body;
     const newUser = new User({ email, username, name, gender });
     const registeredUser = await User.register(newUser, password);
-    console.log(registeredUser);
-    req.login(registeredUser, (err) => {
-      if (err) {
-        return res.status(500).json({ message: "Login failed", error: err });
-      }
-      res.status(201).json({
-        message: `Dear ${username}, welcome to InstaBuzz!`,
-        user: registeredUser,
-      });
+    const token = jwt.sign({ id: registeredUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    res.status(201).json({
+      message: `Dear ${username}, welcome to InstaBuzz!`,
+      user: registeredUser,
+      token,
     });
   } catch (e) {
     res.status(400).json({ message: "Signup failed", error: e.message });
   }
 });
 
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  if (!req.user) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Authentication failed" });
+router.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  (req, res) => {
+    if (!req.user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Authentication failed" });
+    }
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    const { username } = req.body;
+    res.status(200).json({
+      message: `Welcome back to Instabuzz, ${username}!`,
+      success: true,
+      user: req.user,
+      token,
+    });
   }
-  const { username } = req.body;
-  res.status(200).json({
-    message: `Welcome back to Instabuzz, ${username}!`,
-    success: true,
-    user: req.user,
-  });
-});
+);
 
 router.put("/:user/edit", async (req, res) => {
   try {
@@ -65,13 +72,8 @@ router.put("/:user/edit", async (req, res) => {
   }
 });
 
-router.post("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Logout failed", success: false });
-    }
-    res.status(200).json({ success: true, message: "You are logged out!" });
-  });
+router.post("/logout", (req, res) => {
+  res.status(200).json({ success: true, message: "You are logged out!" });
 });
 
 router.put("/:user/upload", upload.single("profileImg"), async (req, res) => {

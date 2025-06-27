@@ -1,8 +1,7 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require("passport-local-mongoose");
-const { post } = require("../PostModel");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new Schema({
   email: {
@@ -28,4 +27,14 @@ const userSchema = new Schema({
 });
 
 userSchema.plugin(passportLocalMongoose);
+
+userSchema.methods.generateJWT = function () {
+  const token = jwt.sign(
+    { id: this._id, username: this.username },
+    process.env.SECRET,
+    { expiresIn: "7d" }
+  );
+  return token;
+};
+
 module.exports = mongoose.model("User", userSchema);

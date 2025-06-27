@@ -1,7 +1,5 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
-const session = require("express-session");
 const cors = require("cors");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -9,7 +7,9 @@ const User = require("./models/UserModel");
 const Post = require("./models/PostModel");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
-const MongoStore = require("connect-mongo");
+const jwt = require("jsonwebtoken");
+
+require("dotenv").config();
 
 const pageRouter = require("./services/pageRoutes");
 const userRouter = require("./services/userRoutes");
@@ -21,6 +21,7 @@ const { Server } = require("socket.io");
 const MONGO_URL =
   process.env.ATLASDB_URL ||
   "mongodb+srv://pawarswapnil3305:KxaibqIkJvmISEFf@cluster0.ej4mfzo.mongodb.net/instabuzz?retryWrites=true&w=majority&appName=Cluster0";
+
 main()
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
@@ -60,31 +61,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const store = MongoStore.create({
-  mongoUrl: MONGO_URL,
-  crypto: { secret: process.env.SECRET },
-  touchAfter: 24 * 3600,
-});
-
-const sessionOptions = {
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-  },
-  store,
-};
-
-app.use(session(sessionOptions));
-
 app.use(passport.initialize());
-app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 app.use("/api", pageRouter);
 app.use("/api", userRouter);

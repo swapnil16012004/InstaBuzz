@@ -2,25 +2,20 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../../models/MessageModel");
 const User = require("../../models/UserModel");
+const isLoggedIn = require("../../middleware");
 
-router.get("/users", async (req, res) => {
-  const { currUsername } = req.query;
-
+router.get("/users", isLoggedIn, async (req, res) => {
   try {
-    const currUser = await User.findOne({ username: currUsername });
+    const currUserId = req.user.id;
 
-    if (!currUser) {
-      return res.status(404).json({ error: "Current user not found" });
-    }
-
-    const users = await User.find({ username: { $ne: currUsername } });
+    const users = await User.find({ _id: { $ne: currUserId } });
 
     const usersWithLastMsg = await Promise.all(
       users.map(async (user) => {
         const lastMessage = await Message.findOne({
           $or: [
-            { sender: currUser._id, receiver: user._id },
-            { sender: user._id, receiver: currUser._id },
+            { sender: currUserId, receiver: user._id },
+            { sender: user._id, receiver: currUserId },
           ],
         })
           .sort({ createdAt: -1 })
@@ -28,7 +23,7 @@ router.get("/users", async (req, res) => {
 
         const unreadCount = await Message.countDocuments({
           sender: user._id,
-          receiver: currUser._id,
+          receiver: currUserId,
           read: false,
         });
 
@@ -50,11 +45,12 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.post("/mark-as-read", async (req, res) => {
-  const { senderId, receiverId } = req.body;
+router.post("/mark-as-read", isLoggedIn, async (req, res) => {
+  const { senderId } = req.body;
+  const receiverId = req.user.id;
 
-  if (!senderId || !receiverId) {
-    return res.status(400).json({ error: "Missing sender or receiver ID" });
+  if (!senderId) {
+    return res.status(400).json({ error: "Missing sender ID" });
   }
 
   try {
@@ -70,8 +66,10 @@ router.post("/mark-as-read", async (req, res) => {
   }
 });
 
-router.get("/messages", async (req, res) => {
-  const { user1, user2 } = req.query;
+router.get("/messages", isLoggedIn, async (req, res) => {
+  const { user2 } = req.query;
+  const user1 = req.user.id;
+
   try {
     const messages = await Message.find({
       $or: [
@@ -89,7 +87,7 @@ router.get("/messages", async (req, res) => {
   }
 });
 
-router.get("/get-id-by-username/:username", async (req, res) => {
+router.get("/get-id-by-username/:username", isLoggedIn, async (req, res) => {
   const { username } = req.params;
 
   try {
@@ -101,16 +99,17 @@ router.get("/get-id-by-username/:username", async (req, res) => {
 
     res.json({ _id: user._id });
   } catch (err) {
-    console.error("❌ Error in /get-id-by-username:", err);
+    console.error("Error in /get-id-by-username:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-router.post("/messages", async (req, res) => {
+router.post("/messages", isLoggedIn, async (req, res) => {
   try {
-    const { sender, receiver, text } = req.body;
+    const sender = req.user.id;
+    const { receiver, text } = req.body;
 
-    if (!sender || !receiver || !text) {
+    if (!receiver || !text) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
