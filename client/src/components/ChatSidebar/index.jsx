@@ -3,6 +3,7 @@ import axiosInstance from "../../axiosConfig";
 import defaultProfileImg from "../../assets/profile1.jpg";
 import { MyContext } from "../../App";
 import socket from "../../socket";
+import { Link } from "react-router-dom";
 
 const ChatSidebar = ({ setSelectedPerson, refreshTrigger }) => {
   const [userList, setUserList] = useState([]);
@@ -24,7 +25,7 @@ const ChatSidebar = ({ setSelectedPerson, refreshTrigger }) => {
 
       setUserList(sorted);
     } catch (err) {
-      console.error("❌ Failed to load users", err);
+      console.error("Failed to load users", err);
     }
   };
 
@@ -66,7 +67,9 @@ const ChatSidebar = ({ setSelectedPerson, refreshTrigger }) => {
                 style={{ width: "32px", height: "32px", borderRadius: "50%" }}
               />
               <div>
-                <div className="chat-user-name">{user.username}</div>
+                <div className="chat-user-name">
+                  <Link to={`/profile/${user.username}`}>{user.username}</Link>
+                </div>
                 <div className="chat-user-msg">
                   {user.lastMsg || "No messages yet"}
                 </div>
