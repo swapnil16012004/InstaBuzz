@@ -19,7 +19,9 @@ export default function AIChat() {
 
     try {
       const res = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD9rxjdFct9sqYCQEIiHhcIgnXavfIwTMw",
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${
+          import.meta.env.VITE_GOOGLE_API_KEY
+        }`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
