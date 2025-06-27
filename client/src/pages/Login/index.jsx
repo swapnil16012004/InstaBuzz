@@ -21,6 +21,7 @@ const Login = () => {
       username: form.username.value,
       password: form.password.value,
     };
+
     try {
       const response = await axiosInstance.post(
         "/login",
@@ -31,6 +32,9 @@ const Login = () => {
       );
       const data = response.data;
       console.log("Login data:", data);
+
+      localStorage.setItem("token", data.token);
+
       context.setCurrUser(data.user.username);
       context.setGender(data.user.gender);
       context.setUserFullName(data.user.name);
@@ -39,10 +43,10 @@ const Login = () => {
       context.setSelectedImage(data.user.profileImg);
       context.setIsLoggedIn(true);
       context.setFlashMessage(data.message);
+
       setTimeout(() => {
         navigate("/");
       }, 100);
-      console.log(context.gender);
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
     }

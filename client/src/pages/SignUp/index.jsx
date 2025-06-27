@@ -27,8 +27,6 @@ const SignUp = () => {
     });
   };
 
-  console.log("Form data:", formData);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -37,10 +35,24 @@ const SignUp = () => {
       form.classList.add("was-validated");
       return;
     }
+
     try {
       const response = await axiosInstance.post(`/signup`, formData);
-      console.log("Signup successful:", response.data);
-      context.setFlashMessage(response.data.message);
+      const data = response.data;
+
+      console.log("Signup successful:", data);
+
+      localStorage.setItem("token", data.token);
+
+      context.setCurrUser(data.user.username);
+      context.setGender(data.user.gender);
+      context.setUserFullName(data.user.name);
+      context.setBio(data.user.bio);
+      context.setCurrUserImage(data.user.profileImg);
+      context.setSelectedImage(data.user.profileImg);
+      context.setIsLoggedIn(true);
+      context.setFlashMessage(data.message);
+
       navigate("/");
     } catch (error) {
       console.error("Signup failed:", error.response?.data || error.message);
@@ -126,7 +138,6 @@ const SignUp = () => {
               <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="male"
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
@@ -141,7 +152,6 @@ const SignUp = () => {
                   control={<Radio />}
                   label="Female"
                 />
-
                 <FormControlLabel
                   value="other"
                   control={<Radio />}

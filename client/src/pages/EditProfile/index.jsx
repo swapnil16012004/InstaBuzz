@@ -3,7 +3,6 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { useContext, useEffect } from "react";
 import { MyContext } from "../../App";
 import axiosInstance from "../../axiosConfig";
@@ -137,6 +136,7 @@ const EditProfile = () => {
             <TextField
               id="bio"
               label="Bio"
+              name="bio"
               variant="outlined"
               defaultValue={context.bio}
               style={{ width: 600, opacity: "0.8" }}

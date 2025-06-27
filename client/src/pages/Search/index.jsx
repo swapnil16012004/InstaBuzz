@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { MyContext } from "../../App";
-import { data, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../axiosConfig";
 import Account from "../../components/Account";
 import { IoClose } from "react-icons/io5";
@@ -58,10 +58,6 @@ const Search = () => {
       navigate("/login");
     }
   }, [context.currUser]);
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>
