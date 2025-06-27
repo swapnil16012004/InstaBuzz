@@ -6,7 +6,8 @@ import Alert from "@mui/material/Alert";
 import { useEffect } from "react";
 
 const CreatePost = () => {
-  const { currUser, setFlashMessage, flashMessage } = useContext(MyContext);
+  const { currUser, setFlashMessage, flashMessage, setDisplayLogo } =
+    useContext(MyContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -43,7 +44,7 @@ const CreatePost = () => {
       );
       console.log("Post created successfully:", response.data);
       setFlashMessage(response.data.message);
-      navigate(`/profile`);
+      navigate(`/profile/${currUser}`);
     } catch (error) {
       console.error("Failed to create post:", error.message);
     }
@@ -55,6 +56,7 @@ const CreatePost = () => {
         setFlashMessage(null);
       }, 4000);
     }
+    setDisplayLogo(false);
   }, [flashMessage]);
 
   return (

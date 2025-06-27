@@ -8,13 +8,13 @@ import {
   faComment,
 } from "@fortawesome/free-regular-svg-icons";
 import { IoClose } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Account from "../../components/Account";
 import axiosInstance from "../../axiosConfig";
 import { Alert } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
-
+import defaultProfileImg from "../../assets/profile1.jpg";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -46,7 +46,22 @@ const FullPost = () => {
     setPostAllLikes,
     setFlashMessage,
     currUserImage,
+    setDisplayLogo,
   } = useContext(MyContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    const from = location.state?.from;
+    if (from === "home") {
+      navigate("/");
+    } else if (from === "profile") {
+      navigate(`/profile/${selectedPost.author.username}`);
+    } else {
+      navigate(-1);
+    }
+  };
 
   const isLiked =
     postAllLikes?.some((like) => like.likeAuthor === currUser) ?? false;
@@ -105,6 +120,7 @@ const FullPost = () => {
           `/${selectedPost.author.username}/${selectedPost._id}/removeLike`,
           Data
         );
+        console.log("unliked");
         setPostAllLikes(response.data.likes);
       }
     } catch (err) {
@@ -127,7 +143,7 @@ const FullPost = () => {
   }, [setPostAllComments, setPostAllLikes]);
 
   const handleClickOpen = () => {
-    console.log("💡 Likes when opening the dialog:", items);
+    console.log("Likes when opening the dialog:", items);
     if (postAllLikes && postAllLikes.length > 0) {
       setOpen(true);
     } else {
@@ -149,6 +165,7 @@ const FullPost = () => {
 
   useEffect(() => {
     setShowNavbar(false);
+    setDisplayLogo(false);
   }, [setShowNavbar, postAllComments, postAllLikes, isLiked]);
 
   if (!selectedPost) {
@@ -167,9 +184,9 @@ const FullPost = () => {
             </Alert>
           )}
         </div>
-        <Link to={`/profile/${selectedPost.author.username}`}>
+        <button className="btn btn-link p-0" onClick={handleGoBack}>
           <IoClose className="closeicon" />
-        </Link>
+        </button>
         <div className="full-post-container d-flex">
           <div className="fullPost-img-container">
             <img
@@ -181,7 +198,10 @@ const FullPost = () => {
           <div className="fullPost-info-container d-flex flex-column">
             <Link to={`/profile/${selectedPost.author.username}`}>
               <div className="fullPost-username d-flex align-items-center">
-                <Account img={selectedPost.author.profileImg} />
+                <Account
+                  img={selectedPost.author.profileImg || defaultProfileImg}
+                />
+                &nbsp;&nbsp;
                 <b className="nameCommentMargin">
                   {selectedPost.author.username}
                 </b>
@@ -195,7 +215,10 @@ const FullPost = () => {
               <div className="fullPost-caption d-flex align-items-center">
                 <Link to={`/profile/${selectedPost.author.username}`}>
                   <div className="d-flex align-items-center">
-                    <Account img={selectedPost.author.profileImg} />
+                    <Account
+                      img={selectedPost.author.profileImg || defaultProfileImg}
+                    />
+                    &nbsp;&nbsp;
                     <b className="nameCommentMargin">
                       {selectedPost.author.username}
                     </b>
@@ -215,7 +238,10 @@ const FullPost = () => {
                     >
                       <Link to={`/profile/${singleComment.commentAuthor}`}>
                         <div className="d-flex align-items-center">
-                          <Account img={singleComment.authorImg} />
+                          <Account
+                            img={singleComment.authorImg || defaultProfileImg}
+                          />
+                          &nbsp;&nbsp;
                           <b className="nameCommentMargin">
                             {singleComment.commentAuthor}
                           </b>

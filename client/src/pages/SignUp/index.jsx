@@ -49,6 +49,7 @@ const SignUp = () => {
 
   useEffect(() => {
     context.setShowNavbar(false);
+    context.setDisplayLogo(false);
   }, [context.showNavbar]);
 
   return (

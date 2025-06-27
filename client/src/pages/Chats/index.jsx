@@ -1,10 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import ChatSidebar from "../../components/ChatSidebar";
+import ChatBox from "../../components/ChatBox";
 
 const Chats = () => {
   const context = useContext(MyContext);
   const navigate = useNavigate();
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [refreshSidebarKey, setRefreshSidebarKey] = useState(0);
+
   useEffect(() => {
     context.setShowNavbar(true);
   }, [context.showNavbar]);
@@ -15,31 +20,27 @@ const Chats = () => {
     }
   }, [context.currUser]);
 
+  const triggerSidebarRefresh = () => {
+    setRefreshSidebarKey((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    context.setDisplayLogo(true);
+    return () => {
+      context.setDisplayLogo(false);
+    };
+  });
+
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4">
-          <h2 className="text-lg font-semibold">Chat with User</h2>
-          <div className="mt-4">
-            <div className="mb-2">
-              <strong>User1:</strong> Hello!
-            </div>
-            <div className="mb-2">
-              <strong>User2:</strong> Hi there!
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="p-4 border-t">
-        <input
-          type="text"
-          placeholder="Type a message..."
-          className="w-full p-2 border rounded"
-        />
-        <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-          Send
-        </button>
-      </div>
+    <div className="chat-app">
+      <ChatSidebar
+        setSelectedPerson={setSelectedPerson}
+        refreshTrigger={refreshSidebarKey}
+      />
+      <ChatBox
+        selectedPerson={selectedPerson}
+        triggerRefresh={triggerSidebarRefresh}
+      />
     </div>
   );
 };

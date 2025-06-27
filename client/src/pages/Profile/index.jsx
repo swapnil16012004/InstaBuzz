@@ -33,6 +33,9 @@ const Profile = () => {
     setBio,
     selectedUser,
     setSelectedUser,
+    currUserImage,
+    setCurrUserImage,
+    setDisplayLogo,
   } = useContext(MyContext);
 
   const navigate = useNavigate();
@@ -61,8 +64,8 @@ const Profile = () => {
           }
         );
         console.log("Image upload response:", response.data);
-
-        setSelectedImage(response.data.user.profileImg);
+        setSelectedImage(response.data.profileImg);
+        setCurrUserImage(response.data.profileImg);
         setFlashMessage(response.data.message);
         navigate("/");
       } catch (error) {
@@ -95,11 +98,13 @@ const Profile = () => {
     setBio,
     setSelectedImage,
     setSelectedUser,
+    setCurrUserImage,
   ]);
 
   useEffect(() => {
     setShowNavbar(true);
-  }, [showNavbar, selectedImage]);
+    setDisplayLogo(false);
+  }, [showNavbar, selectedImage, setSelectedImage]);
 
   useEffect(() => {
     if (flashMessage) {
@@ -206,6 +211,7 @@ const Profile = () => {
               >
                 <Link
                   to={`/profile/${post.author.username}/${post._id}`}
+                  state={{ from: "profile" }}
                   key={post._id}
                 >
                   <Card className="post-image-card">

@@ -14,6 +14,8 @@ import profileImg from "./assets/profile1.jpg";
 import CreatePost from "./pages/CreatePost";
 import FullPost from "./pages/FullPost";
 import ClickSpark from "../Reactbits/ClickSpark/ClickSpark";
+import AIChat from "./pages/AIChat";
+import AILogo from "./components/AILogo";
 
 let MyContext = createContext();
 
@@ -80,6 +82,13 @@ function App() {
     }
   });
 
+  const [allPosts, setAllPosts] = useState(() => {
+    const data = localStorage.getItem("allPosts") || null;
+    return data ? JSON.parse(data) : [];
+  });
+
+  const [displayLogo, setDisplayLogo] = useState(false);
+
   const values = {
     currUser,
     setCurrUser,
@@ -111,6 +120,10 @@ function App() {
     setPostAllComments,
     postAllLikes,
     setPostAllLikes,
+    allPosts,
+    setAllPosts,
+    displayLogo,
+    setDisplayLogo,
   };
 
   useEffect(() => {
@@ -127,6 +140,7 @@ function App() {
       localStorage.setItem("searchedUser", JSON.stringify(searchedUser));
       localStorage.setItem("postAllComments", JSON.stringify(postAllComments));
       localStorage.setItem("postAllLikes", JSON.stringify(postAllLikes));
+      localStorage.setItem("allPosts", JSON.stringify(allPosts));
     } else {
       localStorage.removeItem("currUser");
       localStorage.removeItem("gender");
@@ -140,6 +154,7 @@ function App() {
       localStorage.removeItem("searchedUser");
       localStorage.removeItem("postAllComments");
       localStorage.removeItem("postAllLikes");
+      localStorage.removeItem("allPosts");
     }
   }, [
     currUser,
@@ -154,6 +169,7 @@ function App() {
     currUserImage,
     postAllComments,
     postAllLikes,
+    allPosts,
   ]);
 
   return (
@@ -178,7 +194,9 @@ function App() {
               <Route path="/:username/edit" element={<EditProfile />} />
               <Route path="/:username/create" element={<CreatePost />} />
               <Route path="/profile/:username/:id" element={<FullPost />} />
+              <Route path="/aichat" element={<AIChat />} />
             </Routes>
+            {displayLogo && <AILogo />}
             {showNavbar && <Footer />}
           </MyContext.Provider>
         </Router>

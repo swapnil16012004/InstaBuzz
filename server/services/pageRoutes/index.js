@@ -1,22 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const Post = require("../../models/PostModel");
 
-const rawData = {
-  title: "Instagram",
-  description: "Social media platform for sharing photos and videos",
-  features: [
-    "Photo sharing",
-    "Video sharing",
-    "Stories",
-    "Direct messaging",
-    "Explore page",
-    "Reels",
-  ],
-};
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    res.json(rawData);
+    let allPosts = await Post.find({}).sort({ createdAt: -1 }).populate({
+      path: "author",
+      select: "username profileImg",
+    });
+
+    res.json(allPosts);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }

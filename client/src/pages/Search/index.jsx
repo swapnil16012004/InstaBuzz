@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { Alert } from "@mui/material";
 import BlurText from "../../../Reactbits/BlurText/BlurText";
 import SplitText from "../../../Reactbits/SplitText/SplitText";
+import defaultProfileImg from "../../assets/profile1.jpg";
 
 const Search = () => {
   const context = useContext(MyContext);
@@ -48,6 +49,7 @@ const Search = () => {
 
   useEffect(() => {
     context.setShowNavbar(true);
+    context.setDisplayLogo(false);
     console.log(context.searchedUser);
   }, [context.showNavbar, context.searchedUser]);
 
@@ -87,7 +89,9 @@ const Search = () => {
         <div className="searchedUser d-flex align-items-center justify-content-between">
           <Link to={`/profile/${context.searchedUser.username}`}>
             <div className="searchedUserInfo d-flex align-items-center">
-              <Account img={context.searchedUser.profileImg} />
+              <Account
+                img={context.searchedUser.profileImg || defaultProfileImg}
+              />
               {context.searchedUser.username}
             </div>
           </Link>

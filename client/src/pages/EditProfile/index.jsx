@@ -52,6 +52,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     context.setShowNavbar(true);
+    context.setDisplayLogo(false);
   }, [context.showNavbar]);
 
   useEffect(() => {

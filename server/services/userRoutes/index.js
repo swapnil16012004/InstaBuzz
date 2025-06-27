@@ -223,69 +223,6 @@ router.post("/:user/:postId/addComment", async (req, res) => {
   }
 });
 
-// router.post("/:user/:postId/addLike", async (req, res) => {
-//   const { username, likeAuthor } = req.body;
-//   const { postId } = req.params;
-//   try {
-//     const user = await User.findOne({ username }).populate("posts");
-//     if (!user) {
-//       return res.status(200).json({ message: "User not found" });
-//     }
-//     const post = user.posts.find((p) => p._id.toString() === postId);
-//     if (!post) {
-//       return res.status(404).json({ message: "Post not found" });
-//     }
-
-//     post.likes = post.likes.filter(
-//       (like) => typeof like === "object" && like !== null
-//     );
-
-//     const newLikeAuthor = {
-//       likeAuthor: likeAuthor,
-//     };
-
-//     post.likes.push(newLikeAuthor);
-
-//     await Post.findByIdAndUpdate(postId, { likes: post.likes });
-
-//     res.status(200).json({
-//       likes: post.likes,
-//     });
-//   } catch (err) {
-//     console.error("Error fetching user:", err);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
-// router.post("/:user/:postId/removeLike", async (req, res) => {
-//   const { username, likeAuthor } = req.body;
-//   const { postId } = req.params;
-//   try {
-//     const user = await User.findOne({ username }).populate("posts");
-//     if (!user) {
-//       return res.status(200).json({ message: "User not found" });
-//     }
-//     const post = user.posts.find((p) => p._id.toString() === postId);
-//     if (!post) {
-//       return res.status(404).json({ message: "Post not found" });
-//     }
-
-//     post.likes = post.likes.filter(
-//       (like) => typeof like === "object" && like !== null
-//     );
-
-//     post.likes = post.likes.filter((like) => like.likeAuthor !== likeAuthor);
-
-//     await Post.findByIdAndUpdate(postId, { likes: post.likes });
-
-//     res.status(200).json({
-//       likes: post.likes,
-//     });
-//   } catch (err) {
-//     console.error("Error fetching user:", err);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
 router.post("/:user/:postId/addLike", async (req, res) => {
   const { likeAuthor, authorImg } = req.body;
   const { postId } = req.params;

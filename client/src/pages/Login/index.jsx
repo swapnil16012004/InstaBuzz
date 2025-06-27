@@ -53,6 +53,7 @@ const Login = () => {
       console.log("Current user:", context.currUser);
     }
     context.setShowNavbar(false);
+    context.setDisplayLogo(false);
   }, [context.currUser, context.showNavbar]);
 
   return (

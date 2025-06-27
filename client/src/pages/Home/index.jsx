@@ -3,26 +3,25 @@ import axiosInstance from "../../axiosConfig";
 import { MyContext } from "../../App";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import Post from "../../components/Post";
+import defaultProfileImg from "../../assets/profile1.jpg";
 
 const Home = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [features, setFeatures] = useState([]);
   let context = useContext(MyContext);
+
   const navigate = useNavigate();
   useEffect(() => {
     axiosInstance
-      .get("/pages")
+      .get("/")
       .then((response) => {
-        setTitle(response.data.title);
-        setDescription(response.data.description);
-        setFeatures(response.data.features);
+        console.log("Data fetched successfully:", response.data);
+        context.setAllPosts(response.data);
         context.setShowNavbar(true);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [context.showNavbar]);
+  }, [context.showNavbar, context.setAllPosts, context.allPosts]);
 
   useEffect(() => {
     if (context.flashMessage) {
@@ -36,11 +35,8 @@ const Home = () => {
     if (context.currUser === null) {
       navigate("/login");
     }
+    context.setDisplayLogo(false);
   }, [context.currUser]);
-
-  if (!features) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="home">
@@ -55,17 +51,33 @@ const Home = () => {
         )}
       </div>
       <div className="home_container">
-        <h1> {title} </h1>
-        <p> {description} </p>
-
-        <ul>
-          {features.map((feature, index) => (
-            <li key={index}>{feature}</li>
-          ))}
-        </ul>
+        <div className="allPosts d-flex flex-column align-items-center mt-3 pb-2">
+          {context.allPosts && context.allPosts.length > 0 ? (
+            context.allPosts.map((post) => (
+              <Post
+                key={post._id}
+                id={post._id}
+                img={post.author.profileImg || defaultProfileImg}
+                postAuthor={post.author.username}
+                createdAt={post.createdAt}
+                url={post.imageUrl}
+                caption={post.caption}
+                likes={post.likes}
+                post={post}
+              />
+            ))
+          ) : (
+            <div className="no-posts-message">
+              No posts available. Please check back later.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
-
+<div
+  className="mt-1 mb-1"
+  style={{ borderTop: "1px solid rgba(0, 0, 0, 0.1)" }}
+></div>;
 export default Home;

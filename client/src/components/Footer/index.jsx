@@ -40,25 +40,6 @@ const Footer = () => {
   ];
   return (
     <footer style={{ position: "relative", zIndex: 100 }}>
-      {/* <div className="footer-box d-flex justify-content-between align-items-center">
-        <Link to={"/"}>
-          <GrHomeRounded />
-        </Link>
-        <Link to={"/search"}>
-          <IoSearch />
-        </Link>
-        <Link to={"/reels"}>
-          <BiSolidVideos />
-        </Link>
-        <Link to={"/chats"}>
-          <RiSendPlaneFill />
-        </Link>
-        <a href={`/profile/${currUser}`}>
-          <div className="currProfileImg">
-            <Account img={currUserImage} />
-          </div>
-        </a>
-      </div> */}
       <Dock
         items={items}
         panelHeight={68}
