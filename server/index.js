@@ -80,9 +80,27 @@ app.use((err, req, res, next) => {
 });
 
 const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     origin: allowedOrigins,
+//     credentials: true,
+//   },
+// });
+
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
+      if (
+        !normalizedOrigin ||
+        allowedOrigins.includes(normalizedOrigin) ||
+        origin === "null"
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS (socket.io)"));
+      }
+    },
     credentials: true,
   },
 });
