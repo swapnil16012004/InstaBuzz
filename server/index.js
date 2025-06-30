@@ -34,7 +34,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5000",
   "chrome-extension://amknoiejhlmhancpahfcfcfhllgkpbld",
-  process.env.FRONTEND_URL,
+  // process.env.FRONTEND_URL,
+  "https://insta-buzz-ten.vercel.app",
 ];
 
 app.use(
