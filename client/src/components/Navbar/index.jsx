@@ -37,11 +37,9 @@ const Navbar = () => {
             InstaBuzz
           </Link>
         </Typography>
-        {/* {context.isLoggedIn && ( */}
         <Button className="logoutBtn" color="inherit" onClick={handleLogout}>
           Logout
         </Button>
-        {/* )} */}
       </Toolbar>
     </AppBar>
   );
