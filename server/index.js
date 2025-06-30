@@ -38,27 +38,33 @@ const allowedOrigins = [
   "https://insta-buzz-ten.vercel.app",
 ];
 
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
+//       if (
+//         !normalizedOrigin ||
+//         allowedOrigins.includes(normalizedOrigin) ||
+//         origin === "null"
+//       ) {
+//         callback(null, true);
+//       } else {
+//         console.error(`Blocked by CORS: ${normalizedOrigin}`);
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
-      if (
-        !normalizedOrigin ||
-        allowedOrigins.includes(normalizedOrigin) ||
-        origin === "null"
-      ) {
-        callback(null, true);
-      } else {
-        console.error(`Blocked by CORS: ${normalizedOrigin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: true, // <-- allow all origins for debugging
     credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -87,20 +93,27 @@ const server = http.createServer(app);
 //   },
 // });
 
+// const io = new Server(server, {
+//   cors: {
+//     origin: (origin, callback) => {
+//       const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
+//       if (
+//         !normalizedOrigin ||
+//         allowedOrigins.includes(normalizedOrigin) ||
+//         origin === "null"
+//       ) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS (socket.io)"));
+//       }
+//     },
+//     credentials: true,
+//   },
+// });
+
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      const normalizedOrigin = origin ? origin.replace(/\/$/, "") : origin;
-      if (
-        !normalizedOrigin ||
-        allowedOrigins.includes(normalizedOrigin) ||
-        origin === "null"
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS (socket.io)"));
-      }
-    },
+    origin: true, // <-- allow all origins for debugging
     credentials: true,
   },
 });
