@@ -10,17 +10,27 @@ const Home = () => {
   let context = useContext(MyContext);
 
   const navigate = useNavigate();
+
   useEffect(() => {
-    axiosInstance
-      .get("/")
-      .then((response) => {
-        console.log("Data fetched successfully:", response.data);
-        context.setAllPosts(response.data);
-        context.setShowNavbar(true);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    axios
+      .get("https://instabuzz-9jid.onrender.com/api/")
+      .then(() => console.log("Backend pinged"))
+      .catch((err) => console.error("Backend not responding:", err));
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      axiosInstance
+        .get("/")
+        .then((response) => {
+          console.log("Data fetched successfully:", response.data);
+          context.setAllPosts(response.data);
+          context.setShowNavbar(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    }, 2500);
   }, [context.showNavbar, context.setAllPosts, context.allPosts]);
 
   useEffect(() => {
