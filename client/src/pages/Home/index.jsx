@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import Post from "../../components/Post";
 import defaultProfileImg from "../../assets/profile1.jpg";
+import axios from "axios";
 
 const Home = () => {
   let context = useContext(MyContext);
